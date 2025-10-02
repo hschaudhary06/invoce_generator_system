@@ -1,7 +1,7 @@
 const Invoice = require('../models/invoice');
 const Customer = require('../models/customer');
 
-/*exports.getInvoice = async (req, res) => {
+exports.getInvoice = async (req, res) => {
     try {
         const invoices = await Invoice.find();
 
@@ -22,24 +22,6 @@ const Customer = require('../models/customer');
     } catch (e) {
         res.status(500).json({ message: e.message });
     }
-}; */
-exports.getInvoice = async (req, res) => {
-  try {
-    const invoices = await Invoice.find()
-      .populate("customer_id")   // join customer automatically
-      .lean();                   // return plain JS objects, faster than .toObject()
-
-    // Optionally rename customer_id → customer for consistency
-    const enrichedInvoices = invoices.map((invoice) => ({
-      ...invoice,
-      customer: invoice.customer_id,
-      customer_id: undefined,
-    }));
-
-    res.status(200).json(enrichedInvoices);
-  } catch (e) {
-    res.status(500).json({ message: e.message });
-  }
 };
 
 
