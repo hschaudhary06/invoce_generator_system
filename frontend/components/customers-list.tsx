@@ -64,7 +64,8 @@ export function CustomersList() {
 
   const handleEditSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await invoiceStorage.updateCustomer(currentCustomerId, editFormData);
+    let customerUpdate = await invoiceStorage.updateCustomer(currentCustomerId, editFormData);
+    console.log(customerUpdate.message);
     toast.success('Customer Updated!');
     setEditFormData({ name: "", email: "", phone: "", address: "" });
     setIsEditDialogOpen(false)
@@ -74,7 +75,7 @@ export function CustomersList() {
   const handleDelete = async (id: String) => {
     Swal.fire({
       title: "Are you sure?",
-      text: "You won't be able to revert this!",
+      text: "All invoices associated with this customer will be permanently deleted!",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",

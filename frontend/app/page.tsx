@@ -98,13 +98,17 @@ export default function InvoiceGenerator() {
     // Save or find customer
     let customer = await invoiceStorage.getCustomerById(invoiceData.clientPhone);
 
+    let customer_Id = customer._id;
+
     if (customer.length == 0) {
-      customer = invoiceStorage.saveCustomer({
+      customer = await invoiceStorage.saveCustomer({
         name: invoiceData.clientName,
         email: invoiceData.clientEmail,
         phone: invoiceData.clientPhone,
         address: invoiceData.clientAddress,
       })
+
+      customer_Id = customer.data._id;
     }
 
     // Calculate totals
@@ -114,7 +118,7 @@ export default function InvoiceGenerator() {
     // Save invoice
     const savedInvoice = invoiceStorage.saveInvoice({
       invoiceNumber: invoiceData.invoiceNumber,
-      customerId: customer._id,
+      customerId: customer_Id,
       items: invoiceData.items.map((item) => ({
         name : item.name,
         description: item.description,

@@ -32,13 +32,14 @@ export interface InvoiceRecord {
 }
 
 class InvoiceStorage {
-  private readonly CUSTOMERS_KEY = "perfume_customers"
-  private readonly INVOICES_KEY = "perfume_invoices"
+  private apiUrl = process.env.NEXT_PUBLIC_BACKEND_API;
+  
 
   // Customer methods
   async getCustomers() {
 
-    const responce = await fetch("http://localhost:5000/api/customer");
+
+    const responce = await fetch(`${this.apiUrl}/api/customer`);
     const data = await responce.json();
 
     return data ? data : [] ;
@@ -52,7 +53,7 @@ class InvoiceStorage {
     const address = customer.address;
 
     const customer_data = {customer_name, email, phone, address};
-    const newCustomer = await axios.post("http://localhost:5000/api/customer/", customer_data);
+    const newCustomer = await axios.post(`${this.apiUrl}/api/customer/`, customer_data);
     return newCustomer
   }
 
@@ -65,14 +66,14 @@ class InvoiceStorage {
     
     const customer_update_data = {cust_id, customer_name, email, phone, address};
 
-    const updated_customer = await axios.put("http://localhost:5000/api/customer/", customer_update_data);
+    const updated_customer = await axios.put(`${this.apiUrl}/api/customer/`, customer_update_data);
 
     return updated_customer;
   }
 
   async deleteCustomer(id: String){
 
-    const deletedCustomer = await axios.delete(`http://localhost:5000/api/customer/${id}`);
+    const deletedCustomer = await axios.delete(`${this.apiUrl}/api/customer/${id}`);
     
     return deletedCustomer;
   }
@@ -81,7 +82,7 @@ class InvoiceStorage {
 
     const encodedPhone = encodeURIComponent(phone)
 
-    const responce = await fetch(`http://localhost:5000/api/customer/by_phone?phone=${encodedPhone}`);
+    const responce = await fetch(`${this.apiUrl}/api/customer/by_phone?phone=${encodedPhone}`);
     const data = await responce.json();
 
     return data ? data : [] ;
@@ -90,7 +91,7 @@ class InvoiceStorage {
   // Invoice methods
   async getInvoices() {
         
-        const responce = await fetch("http://localhost:5000/api/invoice");
+        const responce = await fetch(`${this.apiUrl}/api/invoice`);
         const data = await responce.json();
 
         return data ? data : [] ;
@@ -109,23 +110,23 @@ class InvoiceStorage {
 
     const invoice_data = {invoice_number, customer_id, date, due_date, items, amount, status, note };
 
-    const newInvoice = await axios.post("http://localhost:5000/api/invoice", invoice_data);
+    const newInvoice = await axios.post(`${this.apiUrl}/api/invoice`, invoice_data);
 
-    return newInvoice;
+    return newInvoice.data;
   }
 
   async updateInvoicePaymentStatus(invoice_id: string, status: "pending" | "paid") {
     
     const paymentStatus_data = {invoice_id , status};
 
-    const updatedPymentStatus = await axios.put("http://localhost:5000/api/invoice/update_status", paymentStatus_data);
+    const updatedPymentStatus = await axios.put(`${this.apiUrl}/api/invoice/update_status`, paymentStatus_data);
 
     return updatedPymentStatus;
   }
 
   async getInvoiceById(id: string) {
 
-    const responce = await fetch(`http://localhost:5000/api/invoice/by_id?id=${id}`);
+    const responce = await fetch(`${this.apiUrl}/api/invoice/by_id?id=${id}`);
     const data = await responce.json();
 
     return data ? data : [] ; 
@@ -155,7 +156,7 @@ class InvoiceStorage {
   }
 
   async getInvoiceNumber () {
-    const responce = await fetch("http://localhost:5000/api/invoice/last_invoice_number");
+    const responce = await fetch(`${this.apiUrl}/api/invoice/last_invoice_number`);
     const data = await responce.json();
     
     console.log(data);
