@@ -29,16 +29,20 @@ exports.getCustomerByPhone = async (req, res) => {
 exports.saveCustomer = async (req, res) => {
 
     try{
+
         const {customer_name, email, phone, address } = req.body;
 
-        const existingCustomer = await Customer.findOne({ phone: phone });
+        const updatedPhone = `+91 ${phone}`;
+
+        const existingCustomer = await Customer.findOne({ phone: updatedPhone });
 
         if (existingCustomer) {
             // If customer already exists with the same phone, return a message
             return res.status(400).json({ message: "Customer with this phone number already exists" });
         }
+
         
-        const newCustomer = new Customer({customer_name, email, phone, address});
+        const newCustomer = new Customer({customer_name, email, updatedPhone, address});
 
         const saveCustomer = await newCustomer.save();
         res.status(201).json(saveCustomer);

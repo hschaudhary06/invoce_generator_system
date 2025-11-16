@@ -169,12 +169,21 @@ export function InvoiceForm({ invoiceData, setInvoiceData }: InvoiceFormProps) {
             <Label htmlFor="clientPhone" className="text-purple-700">
               Phone
             </Label>
-            <Input
-              id="clientPhone"
-              value={invoiceData.clientPhone}
-              onChange={(e) => updateField("clientPhone", e.target.value)}
-              className="border-purple-200 focus:border-purple-400"
-            />
+            <div style={{display: "flex",width: "100%"}}>
+              <Input 
+                id="countryCode"
+                value={"+91"}
+                className="border-purple-200 focus:border-purple-400"
+                disabled
+                style={{display: "flex",width: "25%",marginRight: "10px"}}
+              />
+              <Input
+                id="clientPhone"
+                value={invoiceData.clientPhone}
+                onChange={(e) => updateField("clientPhone", e.target.value)}
+                className="border-purple-200 focus:border-purple-400"
+              />
+            </div>
           </div>
           <div>
             <Label htmlFor="clientAddress" className="text-purple-700">

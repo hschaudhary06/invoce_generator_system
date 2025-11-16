@@ -434,11 +434,11 @@ export async function generatePDFById(invoiceData: any) {
                 <h1 class="business-name">Nazaf Parfumerie</h1>
               </div>
               <div class="business-details">
-                123 Fragrance Avenue
-                Paris, France 75001
+                Near Marigold restaturant, 
+                Ahmedabad, 382350
               </div>
               <div class="business-details">
-                +91 9537323720 • fs.chaudhary@gmail.com
+                +91 95373 23720 • nazafparfumerie@gmail.com
               </div>
             </div>
             <div class="text-right">
