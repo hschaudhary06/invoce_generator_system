@@ -52,7 +52,7 @@ class InvoiceStorage {
     const address = customer.address;
 
     const customer_data = {customer_name, email, phone, address};
-    const newCustomer = await axios.post("${this.apiUrl}/api/customer/", customer_data);
+    const newCustomer = await axios.post(`${this.apiUrl}/api/customer/`, customer_data);
     return newCustomer
   }
 
