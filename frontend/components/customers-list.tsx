@@ -15,6 +15,7 @@ import { invoiceStorage} from "@/lib/invoice-storage"
 import { toast, Toaster } from 'react-hot-toast';
 import Swal from 'sweetalert2'
 import { LucideIcon } from 'lucide-react';
+import { AxiosError } from "axios"
 
 interface FieldInputProps {
   label: string;
@@ -153,19 +154,68 @@ export function CustomersList() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    await invoiceStorage.saveCustomer(formData)
-    setFormData({ name: "", email: "", phone: "", address: "" })
-    setIsDialogOpen(false)
-    loadCustomers()
+    try{
+      let customer = await invoiceStorage.saveCustomer(formData);
+      toast.error("Customer Successfully Saved.");
+      setFormData({ name: "", email: "", phone: "", address: "" })
+      setIsDialogOpen(false)
+      loadCustomers()
+    }
+    catch (error){
+      const axiosError = error as AxiosError<{ message: string }>;
+
+      if (axiosError.response && axiosError.response.data && axiosError.response.data.message) {
+        // 1. EXTRACT THE MESSAGE: Access the message from the server response data
+        const serverMessage = axiosError.response.data.message;
+        toast.error(serverMessage);
+        
+        console.error("Server Validation Error:", serverMessage);
+        
+      } else if (axiosError.message) {
+        // 2. Handle generic errors (e.g., "Network Error", "Timeout")
+        toast.error(`An error occurred: ${axiosError.message}`);
+        console.error("Client/Network Error:", axiosError.message);
+        
+      } else {
+        // 3. Handle unexpected/unknown errors
+        toast.error("An unexpected error occurred. Check your connection.");
+        console.error("Unknown Error:", error);
+      }
+    }
+    
   }
 
   const handleEditSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    let customerUpdate = await invoiceStorage.updateCustomer(currentCustomerId, editFormData);
-    toast.success('Customer Updated!');
-    setEditFormData({ name: "", email: "", phone: "", address: "" });
-    setIsEditDialogOpen(false)
-    loadCustomers()
+    try{
+      let customerUpdate = await invoiceStorage.updateCustomer(currentCustomerId, editFormData);
+      toast.success('Customer Updated!');
+      setEditFormData({ name: "", email: "", phone: "", address: "" });
+      setIsEditDialogOpen(false)
+      loadCustomers()
+    }
+    catch(error) {
+      const axiosError = error as AxiosError<{ message: string }>;
+
+      if (axiosError.response && axiosError.response.data && axiosError.response.data.message) {
+        // 1. EXTRACT THE MESSAGE: Access the message from the server response data
+        const serverMessage = axiosError.response.data.message;
+        toast.error(serverMessage);
+        
+        console.error("Server Validation Error:", serverMessage);
+        
+      } else if (axiosError.message) {
+        // 2. Handle generic errors (e.g., "Network Error", "Timeout")
+        toast.error(`An error occurred: ${axiosError.message}`);
+        console.error("Client/Network Error:", axiosError.message);
+        
+      } else {
+        // 3. Handle unexpected/unknown errors
+        toast.error("An unexpected error occurred. Check your connection.");
+        console.error("Unknown Error:", error);
+      }
+    }
+    
   }
 
   const handleDelete = async (id: String) => {
