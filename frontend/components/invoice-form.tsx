@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Card } from "@/components/ui/card"
-import { Trash2, Plus, Sparkles } from "lucide-react"
+import { Trash2, Plus, Sparkles, User } from "lucide-react"
 import type { InvoiceData, InvoiceItem } from "@/app/page"
 import { invoiceStorage} from "@/lib/invoice-storage"
 
@@ -14,6 +14,45 @@ interface InvoiceFormProps {
   invoiceData: InvoiceData
   setInvoiceData: (data: InvoiceData) => void
 }
+
+interface CustomerListItem {
+  _id: string;
+  customer_name: string;
+  phone: string;
+}
+
+interface CustomerDropdownProps {
+  customers: CustomerListItem[];
+  selectedId: string;
+  onSelect: (id: string) => void;
+}
+
+// NEW Component: Customer Dropdown
+const CustomerDropdown = ({ customers, selectedId, onSelect }: CustomerDropdownProps) => (
+  <div className="flex flex-col space-y-2">
+    <label htmlFor="clientNameDropdown" className="text-sm font-medium text-gray-700">Client Name</label>
+    <div className="relative rounded-lg shadow-sm">
+      <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+        <User className="h-5 w-5 text-purple-400" aria-hidden="true" />
+      </div>
+      <select
+        id="clientNameDropdown"
+        name="clientNameDropdown"
+        value={selectedId}
+        // Handle select change and pass the ID back to the parent
+        onChange={(e) => onSelect(e.target.value)}
+        className="block w-full rounded-lg border-gray-300 py-3 pl-10 pr-4 bg-white text-gray-900 text-sm focus:ring-purple-500 focus:border-purple-500 transition duration-150 ease-in-out"
+      >
+        <option value="">-- Select Existing Customer --</option>
+        {customers.map((customer) => (
+          <option key={customer._id} value={customer._id}>
+            {customer.customer_name} ({customer.phone})
+          </option>
+        ))}
+      </select>
+    </div>
+  </div>
+);
 
 export function InvoiceForm({ invoiceData, setInvoiceData }: InvoiceFormProps) {
   const [newItem, setNewItem] = useState<Omit<InvoiceItem, "id">>({
@@ -24,10 +63,13 @@ export function InvoiceForm({ invoiceData, setInvoiceData }: InvoiceFormProps) {
   })
   
   const [lastInvoiceNum, setLastInvoiceNum] = useState(String);
+  const [customerList, setCustomerList] = useState<CustomerListItem[]>([]);
+  const [selectedCustomerId, setSelectedCustomerId] = useState<string>('');
 
 
   useEffect(() => {
     getInvoiceNumber();
+    fetchCustomer();
   }, [])
 
   const updateField = (field: keyof InvoiceData, value: any) => {
@@ -74,6 +116,46 @@ export function InvoiceForm({ invoiceData, setInvoiceData }: InvoiceFormProps) {
       console.error("Error loading customers:", e);
     }   
   }
+
+  const fetchCustomer = async () => {
+      try {
+        const data = await invoiceStorage.getCustomers();
+        setCustomerList(data || []);
+      } catch (err) {
+        console.error("Error loading customers:", err);
+        setCustomerList([]);
+      }
+  }
+
+  const handleDropdownSelect = async (id: string) => {
+    setSelectedCustomerId(id);
+
+    if (id === '') {
+        setInvoiceData({ 
+            ...invoiceData,
+            customerId: "",
+            clientName: "",
+            clientEmail: "",
+            clientPhone: "",
+            clientAddress: ""
+        })
+
+    } else {
+
+        const customer = await invoiceStorage.getCustomerById(id);
+        if (customer) {
+          setInvoiceData({ 
+            ...invoiceData,
+            customerId: customer.data._id,
+            clientName: customer.data.customer_name,
+            clientEmail: customer.data.email,
+            clientPhone: customer.data.phone,
+            clientAddress: customer.data.address
+          })
+            
+        }
+    }
+  };
 
   return (
     <div className="space-y-8">
@@ -141,8 +223,15 @@ export function InvoiceForm({ invoiceData, setInvoiceData }: InvoiceFormProps) {
           </svg>
           <h3 className="font-semibold text-purple-800">Client Information</h3>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
           <div>
+            <CustomerDropdown
+                customers={customerList}
+                selectedId={selectedCustomerId}
+                onSelect={handleDropdownSelect}
+            />
+          </div>
+          {/* <div>
             <Label htmlFor="clientName" className="text-purple-700">
               Client Name
             </Label>
@@ -196,7 +285,7 @@ export function InvoiceForm({ invoiceData, setInvoiceData }: InvoiceFormProps) {
               rows={3}
               className="border-purple-200 focus:border-purple-400"
             />
-          </div>
+          </div> */}
         </div>
       </Card>
 

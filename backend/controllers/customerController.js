@@ -17,13 +17,28 @@ exports.getCustomerByPhone = async (req, res) => {
         
         const {phone} = req.query;
 
-        const customerByPhone = await Customer.findOne({ phone: phone });
+        const updatedPhone = `+91 ${phone}`;
+
+        const customerByPhone = await Customer.findOne({ phone: updatedPhone });
         res.json(customerByPhone);
     }
     catch (e) {
         res.status(500).json({ message: err.message });
     }
 
+}
+
+exports.getCustomerByID = async (req, res) => {
+
+    try{
+        const customerId = req.params.id;
+        
+        const customerByID = await Customer.findById(customerId);
+        res.json(customerByID);
+    }
+    catch (e){
+        res.status(500).json({ message: err.message });
+    }
 }
 
 exports.saveCustomer = async (req, res) => {
@@ -41,8 +56,12 @@ exports.saveCustomer = async (req, res) => {
             return res.status(400).json({ message: "Customer with this phone number already exists" });
         }
 
-        
-        const newCustomer = new Customer({customer_name, email, updatedPhone, address});
+        const newCustomer = new Customer({
+            customer_name: customer_name,
+            email: email,
+            phone: updatedPhone,
+            address: address
+        });
 
         const saveCustomer = await newCustomer.save();
         res.status(201).json(saveCustomer);
@@ -59,14 +78,23 @@ exports.updateCustomer = async (req, res) => {
         
         const {cust_id, customer_name, email, phone, address } = req.body;
 
-        const existingCustomer = await Customer.findOne({ phone: phone });
+        const updatedPhone = `+91 ${phone}`;
+
+        const existingCustomer = await Customer.findOne({ phone: updatedPhone });
 
         if (existingCustomer) {
-            // If customer already exists with the same phone, return a message
-            return res.status(400).json({ message: "Customer with this phone number already exists" });
+
+            if(existingCustomer._id != cust_id){
+                // If customer already exists with the same phone, return a message
+                return res.status(400).json({ message: "Customer with this phone number already exists" });
+            }
+
         }
 
-        const updatedCustomer = await Customer.findByIdAndUpdate(cust_id, {customer_name, email, phone, address}, {new: true}); 
+
+        const updatedCustomer = await Customer.findByIdAndUpdate(cust_id, {
+            customer_name: customer_name, email, phone: updatedPhone, address
+        }, {new: true}); 
 
         res.status(200).json(updatedCustomer);
 

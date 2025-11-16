@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 
 export interface Customer {
   id: string
@@ -29,6 +29,16 @@ export interface InvoiceRecord {
   paymentStatus: "pending" | "paid" | "overdue"
   createdAt: string
   updatedAt: string
+}
+
+interface CustomerResponse {
+  customer_name: string;
+  _id: string;
+  email: string;
+  phone: string;
+  address: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 class InvoiceStorage {
@@ -77,7 +87,7 @@ class InvoiceStorage {
     return deletedCustomer;
   }
 
-  async getCustomerById(phone: string) {
+  async getCustomerByPhone(phone: string) {
 
     const encodedPhone = encodeURIComponent(phone)
 
@@ -85,6 +95,13 @@ class InvoiceStorage {
     const data = await responce.json();
 
     return data ? data : [] ;
+  }
+
+  async getCustomerById(id: string): Promise<AxiosResponse<CustomerResponse>> {
+
+    const responce = await axios.get(`${this.apiUrl}/api/customer/${id}`);
+
+    return responce;
   }
 
   // Invoice methods

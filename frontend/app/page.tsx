@@ -25,6 +25,7 @@ export interface InvoiceData {
   businessAddress: string
   businessPhone: string
   businessEmail: string
+  customerId: string
   clientName: string
   clientAddress: string
   clientPhone: string
@@ -80,6 +81,7 @@ export default function InvoiceGenerator() {
     businessAddress: "Near Marigold restaturant, Ahmedabad, 382350",
     businessPhone: "+91 95373 23720",
     businessEmail: "nazafparfumerie@gmail.com",
+    customerId: "",
     clientName: "",
     clientAddress: "",
     clientPhone: "",
@@ -95,21 +97,21 @@ export default function InvoiceGenerator() {
       return
     }
 
-    // Save or find customer
-    let customer = await invoiceStorage.getCustomerById(invoiceData.clientPhone);
+    // // Save or find customer
+    // let customer = await invoiceStorage.getCustomerByPhone(invoiceData.clientPhone);
 
-    let customer_Id = customer._id;
+    let customer_Id = invoiceData.customerId;
 
-    if (customer.length == 0) {
-      customer = await invoiceStorage.saveCustomer({
-        name: invoiceData.clientName,
-        email: invoiceData.clientEmail,
-        phone: invoiceData.clientPhone,
-        address: invoiceData.clientAddress,
-      })
+    // if (customer.length == 0) {
+    //   customer = await invoiceStorage.saveCustomer({
+    //     name: invoiceData.clientName,
+    //     email: invoiceData.clientEmail,
+    //     phone: invoiceData.clientPhone,
+    //     address: invoiceData.clientAddress,
+    //   })
 
-      customer_Id = customer.data._id;
-    }
+    //   customer_Id = customer.data._id;
+    // }
 
     // Calculate totals
     const subtotal = invoiceData.items.reduce((sum, item) => sum + item.quantity * item.price, 0)

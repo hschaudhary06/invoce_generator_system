@@ -30,7 +30,7 @@ exports.saveInvoice = async (req, res) => {
 
         const {invoice_number, customer_id, date, due_date, items, amount, status, note } = req.body;
 
-        console.log(invoice_number, customer_id, date, due_date, items, amount, status, note);
+        // console.log(invoice_number, customer_id, date, due_date, items, amount, status, note);
 
         const newInvoice = new Invoice({invoice_number, customer_id, date, due_date, items, amount, status, note });
 
