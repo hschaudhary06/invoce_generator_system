@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { invoiceStorage } from "@/lib/invoice-storage"
 import { BarChart3 } from "lucide-react"
+import { ToastContainer, toast } from 'react-toastify';
 
 
 export interface InvoiceItem {
@@ -91,9 +92,11 @@ export default function InvoiceGenerator() {
     taxRate: 20,
   })
 
+  
+
   const saveInvoice = async () => {
     if (!invoiceData.clientName || !invoiceData.clientPhone || invoiceData.items.length === 0) {
-      alert("Please fill in client information and add at least one item before saving.")
+      toast.warning("Please fill in client information and add at least one item before saving.",{theme: "dark"})
       return
     }
 
@@ -135,18 +138,23 @@ export default function InvoiceGenerator() {
       paymentStatus: "pending",
     })
 
-    alert(`Invoice ${invoiceData.invoiceNumber} saved successfully!`)
+    toast.success(`Invoice ${invoiceData.invoiceNumber} saved successfully!`,{theme: "dark"})
 
     // Generate new invoice number for next invoice
     setInvoiceData((prev) => ({
       ...prev,
-      invoiceNumber: `INV-${Date.now()}`,
+      invoiceNumber: `${invoiceData.invoiceNumber}`,
       clientName: "",
       clientAddress: "",
       clientPhone: "",
       clientEmail: "",
       items: [],
     }))
+
+    setTimeout(()=>{
+      window.location.reload();
+    }, 2500)
+    
   }
 
   return (
@@ -246,6 +254,7 @@ export default function InvoiceGenerator() {
           </Card>
         </div>
       </div>
+      <ToastContainer />
     </div>
   )
 }

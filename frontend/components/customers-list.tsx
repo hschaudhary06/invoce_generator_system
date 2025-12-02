@@ -2,17 +2,14 @@
 
 import type React from "react"
 
-import { useCallback, useEffect, useState } from "react"
+import {useEffect, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
 import { Users, Plus, Mail, Phone, MapPin, PenSquareIcon, Trash2, User } from "lucide-react"
 import { invoiceStorage} from "@/lib/invoice-storage"
-import { toast, Toaster } from 'react-hot-toast';
+import { ToastContainer, toast } from 'react-toastify';
 import Swal from 'sweetalert2'
 import { LucideIcon } from 'lucide-react';
 import { AxiosError } from "axios"
@@ -156,7 +153,7 @@ export function CustomersList() {
     e.preventDefault()
     try{
       let customer = await invoiceStorage.saveCustomer(formData);
-      toast.error("Customer Successfully Saved.");
+      toast.success("Customer Successfully Saved.",{theme: "dark"});
       setFormData({ name: "", email: "", phone: "", address: "" })
       setIsDialogOpen(false)
       loadCustomers()
@@ -167,18 +164,18 @@ export function CustomersList() {
       if (axiosError.response && axiosError.response.data && axiosError.response.data.message) {
         // 1. EXTRACT THE MESSAGE: Access the message from the server response data
         const serverMessage = axiosError.response.data.message;
-        toast.error(serverMessage);
+        toast.error(serverMessage,{theme: "dark"});
         
         console.error("Server Validation Error:", serverMessage);
         
       } else if (axiosError.message) {
         // 2. Handle generic errors (e.g., "Network Error", "Timeout")
-        toast.error(`An error occurred: ${axiosError.message}`);
+        toast.error(`An error occurred: ${axiosError.message}`,{theme: "dark"});
         console.error("Client/Network Error:", axiosError.message);
         
       } else {
         // 3. Handle unexpected/unknown errors
-        toast.error("An unexpected error occurred. Check your connection.");
+        toast.error("An unexpected error occurred. Check your connection.",{theme: "dark"});
         console.error("Unknown Error:", error);
       }
     }
@@ -189,7 +186,7 @@ export function CustomersList() {
     e.preventDefault();
     try{
       let customerUpdate = await invoiceStorage.updateCustomer(currentCustomerId, editFormData);
-      toast.success('Customer Updated!');
+      toast.success('Customer Updated!',{theme: "dark"});
       setEditFormData({ name: "", email: "", phone: "", address: "" });
       setIsEditDialogOpen(false)
       loadCustomers()
@@ -200,18 +197,18 @@ export function CustomersList() {
       if (axiosError.response && axiosError.response.data && axiosError.response.data.message) {
         // 1. EXTRACT THE MESSAGE: Access the message from the server response data
         const serverMessage = axiosError.response.data.message;
-        toast.error(serverMessage);
+        toast.error(serverMessage,{theme: "dark"});
         
         console.error("Server Validation Error:", serverMessage);
         
       } else if (axiosError.message) {
         // 2. Handle generic errors (e.g., "Network Error", "Timeout")
-        toast.error(`An error occurred: ${axiosError.message}`);
+        toast.error(`An error occurred: ${axiosError.message}`,{theme: "dark"});
         console.error("Client/Network Error:", axiosError.message);
         
       } else {
         // 3. Handle unexpected/unknown errors
-        toast.error("An unexpected error occurred. Check your connection.");
+        toast.error("An unexpected error occurred. Check your connection.",{theme: "dark"});
         console.error("Unknown Error:", error);
       }
     }
@@ -503,6 +500,7 @@ export function CustomersList() {
           </Table>
         )}
       </CardContent>
+      
     </Card>
   )
 }

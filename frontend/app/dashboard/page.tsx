@@ -6,6 +6,7 @@ import { DashboardStats } from "@/components/dashboard-stats"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { InvoicesList } from "@/components/invoices-list"
 import { CustomersList } from "@/components/customers-list"
+import { ToastContainer, toast } from 'react-toastify';
 
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState("overview")
@@ -37,7 +38,7 @@ export default function DashboardPage() {
           <CustomersList />
         </TabsContent>
       </Tabs>
-
+      <ToastContainer />
     </DashboardLayout>
   )
 }
