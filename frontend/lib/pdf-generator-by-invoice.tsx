@@ -434,11 +434,10 @@ export async function generatePDFById(invoiceData: any) {
                 <h1 class="business-name">Nazaf Parfumerie</h1>
               </div>
               <div class="business-details">
-                Near Marigold restaturant, 
-                Ahmedabad, 382350
+                Dabhel, Nani Daman, Daman and diu, 396210
               </div>
               <div class="business-details">
-                +91 95373 23720 • nazafparfumerie@gmail.com
+                +91 84888 44788 • nazafparfumerie@gmail.com
               </div>
             </div>
             <div class="text-right">
